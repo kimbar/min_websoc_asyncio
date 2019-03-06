@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Minimal websocket/asyncio demo</title>
+        <meta charset="utf-8">
+        <style>
+            ul {
+                width:100%;
+                text-align: left;
+                margin: 0px;
+                padding: 5px;
+                box-sizing: border-box;
+            }
+            li{
+                list-style: none;
+                border: 1px solid #AAA;
+                display: inline-block;
+                padding: 2px 5px;
+                margin: 0 0 -1px -1px;
+                background: white;
+            }
+            li:hover{
+                background: #FFA;
+                cursor: pointer;
+            }
+            span.checkbox{
+                border: 1px solid #888;
+                width: 1.2em;
+                text-align: center;
+                display: inline-block;
+                border-radius: 7px;
+                margin-right: 0.5em;
+            }
+            span.checkbox:hover{
+                background: #888;
+            }
+            span.checkbox::before{
+                content: "+";
+            }
+            span.selected{
+                background: black;
+                color: white;
+            }
+            span.selected::before{
+                content: "-";
+            }
+        </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+
+                let websocket = new WebSocket("ws://127.0.0.1:5678/")
+                let messages = document.getElementById('messages')
+
+                messages.addEventListener('click', function(event){
+                    if (event.target.classList.contains('checkbox')) {
+                        event.target.classList.toggle('selected')
+                        websocket.send(event.target.parentElement.innerHTML)
+                    }   
+                })
+
+                websocket.onmessage = function (event) {
+                    let message = document.createElement('li')
+                    message.innerHTML = "<span class='checkbox'></span>" + event.data
+                    messages.appendChild(message)
+                }
+
+            }, false);
+        </script>
+
+    </head>
+
+    <body>
+        <ul id="messages">
+        </ul>
+    </body>
+
+</html>
